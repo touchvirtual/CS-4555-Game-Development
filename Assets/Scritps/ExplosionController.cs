@@ -22,7 +22,15 @@ public class ExplosionController : MonoBehaviour
         nextReadyTime = Time.time + cooldown;
 
         if (explosionVfxPrefab != null)
-            Instantiate(explosionVfxPrefab, transform.position, Quaternion.identity);
+        {
+            GameObject effect = Instantiate(
+                explosionVfxPrefab,
+                transform.position,
+                Quaternion.identity
+            );
+
+            Destroy(effect, 1f);
+        }
 
         Collider[] hits = Physics.OverlapSphere(transform.position, radius, targetLayers);
         foreach (Collider hit in hits)

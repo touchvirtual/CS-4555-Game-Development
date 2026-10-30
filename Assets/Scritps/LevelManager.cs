@@ -1,4 +1,6 @@
+
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelManager : MonoBehaviour
 {
@@ -17,19 +19,16 @@ public class LevelManager : MonoBehaviour
     public void EnemyDefeatedForLevel()
     {
         defeatedThisLevel++;
+
         if (defeatedThisLevel >= enemiesRequired)
         {
-            
             if (npcArrow != null)
             {
                 npcArrow.ShowArrow();
             }
-
-            //CompleteLevel();
         }
-        
     }
-    
+
     public int EnemiesRemaining
     {
         get { return Mathf.Max(0, enemiesRequired - defeatedThisLevel); }
@@ -37,15 +36,26 @@ public class LevelManager : MonoBehaviour
 
     public void CompleteLevel()
     {
-        if (GameManager.Instance != null) GameManager.Instance.SetPaused(true);
-        if (UpgradeManager.Instance != null) UpgradeManager.Instance.ShowChoices();
-        else if (UIManager.Instance != null) UIManager.Instance.ShowLevelComplete();
+        if (GameManager.Instance != null)
+            GameManager.Instance.SetPaused(true);
+
+        if (UpgradeManager.Instance != null)
+            UpgradeManager.Instance.ShowChoices();
+        else if (UIManager.Instance != null)
+            UIManager.Instance.ShowLevelComplete();
     }
 
     public void ContinueAfterUpgrade()
     {
-        currentLevel++;
-        defeatedThisLevel = 0;
-        if (GameManager.Instance != null) GameManager.Instance.SetPaused(false);
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+        }
+        else
+        {
+            Debug.Log("Congratulations! You completed all levels!");
+        }
     }
 }

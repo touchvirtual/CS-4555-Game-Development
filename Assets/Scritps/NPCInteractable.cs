@@ -4,9 +4,15 @@ using UnityEngine.InputSystem;
 
 public class NPCInteractable : MonoBehaviour
 {
+    private bool waitForKeyRelease = false;
+
     [TextArea(3, 6)]
-    public string dialogue =
-        "Hello, little cat! That was some good fighting.";
+    public string[] dialogueLines = {
+        "Thank you, little cat! That was some good fighting.",
+        "I noticed you were fighting those pesky dog knights earlier.",
+        "They've been causing trouble in the village for a while now.",
+        "Come on lets go see how the village is doing."
+    };
 
     private PlayerController player;
     private bool playerNearby = false;
@@ -20,6 +26,7 @@ public class NPCInteractable : MonoBehaviour
 
         return level.EnemiesRemaining <= 0;
     }
+   
 
     private void Update()
     {
@@ -30,22 +37,32 @@ public class NPCInteractable : MonoBehaviour
             Keyboard.current == null)
             return;
 
+        if (waitForKeyRelease)
+        {
+            if (!Keyboard.current.fKey.isPressed)
+                waitForKeyRelease = false;
+
+            return;
+        }
+
         if (!AllEnemiesDefeated())
         {
             DialogueUI.Instance.ShowPrompt(false);
             return;
         }
 
+        if (DialogueUI.Instance.IsTalking)
+            return;
+
         DialogueUI.Instance.ShowPrompt(true);
 
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
-            if (DialogueUI.Instance.IsTalking)
-                DialogueUI.Instance.CloseDialogue();
-            else
-                DialogueUI.Instance.StartDialogue(dialogue, player);
+            waitForKeyRelease = true;
+            DialogueUI.Instance.StartDialogue(dialogueLines, player);
         }
     }
+
 
     private void OnTriggerEnter(Collider other)
     {

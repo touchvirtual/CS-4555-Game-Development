@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public enum UpgradeType { ExplosionDamage, ExplosionRadius, MoveSpeed, MaxHealth, Heal, ExplosionCooldown }
+public enum UpgradeType { ExplosionDamage, ExplosionRadius, MoveSpeed, MaxHealth, Heal, ExplosionCooldown, Stealth }
 
-[CreateAssetMenu(fileName = "Upgrade", menuName = "Catastrophe/Upgrade")]
+[CreateAssetMenu(fileName = "Upgrade", menuName = "BombaCat/Upgrade")]
 public class UpgradeData : ScriptableObject
 {
     public string upgradeName = "Bigger Boom";

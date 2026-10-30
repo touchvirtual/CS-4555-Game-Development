@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class DialogueUI : MonoBehaviour
 {
@@ -8,12 +9,15 @@ public class DialogueUI : MonoBehaviour
 
     public GameObject dialoguePanel;
     public TMP_Text dialogueText;
-    public TMP_Text talkPrompt;
+    public GameObject interactionPrompt;
 
-    private bool isTalking = false;
-    private PlayerController currentPlayerController;
+    public bool IsTalking { get; private set; }
+    public System.Action OnDialogueCompleted;
 
-    public bool IsTalking => isTalking;
+    private string[] dialogueLines;
+    private int currentLine;
+    private PlayerController currentPlayer;
+    private bool canAdvance = false;
 
     private void Awake()
     {
@@ -22,49 +26,103 @@ public class DialogueUI : MonoBehaviour
 
     private void Start()
     {
-        CloseDialogue();
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
     }
 
-    public void ShowPrompt(bool show)
+    private void Update()
     {
-        if (talkPrompt != null)
-            talkPrompt.gameObject.SetActive(show && !isTalking);
+        if (!IsTalking || Keyboard.current == null)
+            return;
+
+        if (!Keyboard.current.qKey.isPressed)
+        {
+            canAdvance = true;
+        }
+
+        if (canAdvance &&
+            Keyboard.current.qKey.wasPressedThisFrame)
+        {
+            canAdvance = false;
+            AdvanceDialogue();
+        }
     }
 
     public void StartDialogue(
-        string message,
-        PlayerController playerController)
+        string[] lines, PlayerController player)
     {
-        isTalking = true;
-        currentPlayerController = playerController;
+        if (lines == null || lines.Length == 0)
+            return;
 
-        if (currentPlayerController != null)
-            currentPlayerController.enabled = false;
-
-        if (talkPrompt != null)
-            talkPrompt.gameObject.SetActive(false);
+        dialogueLines = lines;
+        currentLine = 0;
+        currentPlayer = player;
+        IsTalking = true;
+        canAdvance = false;
 
         if (dialoguePanel != null)
             dialoguePanel.SetActive(true);
 
         if (dialogueText != null)
-            dialogueText.text = message;
+            dialogueText.text = dialogueLines[currentLine];
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
+
+        if (currentPlayer != null)
+            currentPlayer.enabled = false;
     }
+
+    public void StartDialogue(
+        string message, PlayerController player)
+    {
+        StartDialogue(new string[] { message }, player);
+    }
+
+    private void AdvanceDialogue()
+    {
+        currentLine++;
+
+        if (currentLine >= dialogueLines.Length)
+        {
+            CloseDialogue();
+            OnDialogueCompleted?.Invoke();
+            return;
+        }
+
+        if (dialogueText != null)
+            dialogueText.text = dialogueLines[currentLine];
+    }
+
+
 
     public void CloseDialogue()
     {
-        isTalking = false;
+        IsTalking = false;
 
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);
 
-        if (talkPrompt != null)
-            talkPrompt.gameObject.SetActive(false);
+        if (currentPlayer != null)
+            currentPlayer.enabled = true;
 
-        if (currentPlayerController != null)
-        {
-            currentPlayerController.enabled = true;
-            currentPlayerController = null;
-        }
+        currentPlayer = null;
+        dialogueLines = null;
+        currentLine = 0;
+        canAdvance = false;
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
+    }
+
+
+
+    public void ShowPrompt(bool show)
+    {
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(show && !IsTalking);
     }
 }

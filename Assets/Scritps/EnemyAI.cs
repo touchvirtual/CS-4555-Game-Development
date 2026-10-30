@@ -1,3 +1,4 @@
+
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -23,9 +24,24 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.IsPaused) return;
-        if (target == null) FindTarget();
-        if (target == null) return;
+        if (GameManager.Instance != null && GameManager.Instance.IsPaused)
+            return;
+
+        if (target == null)
+            FindTarget();
+
+        if (target == null)
+            return;
+
+        // Check whether the player is currently stealthed.
+        PlayerStealth stealth = target.GetComponentInParent<PlayerStealth>();
+
+        if (stealth != null && stealth.IsStealthed)
+        {
+            // Stop chasing and attacking, but continue applying gravity.
+            ApplyGravity();
+            return;
+        }
 
         Vector3 delta = target.position - transform.position;
         delta.y = 0;
@@ -34,18 +50,34 @@ public class EnemyAI : MonoBehaviour
         if (distance <= detectionRange && distance > attackRange)
         {
             Vector3 direction = delta.normalized;
+
             controller.Move(direction * moveSpeed * Time.deltaTime);
+
             if (direction.sqrMagnitude > 0.01f)
-                transform.forward = Vector3.Slerp(transform.forward, direction, 10f * Time.deltaTime);
+                transform.forward = Vector3.Slerp(
+                    transform.forward,
+                    direction,
+                    10f * Time.deltaTime
+                );
         }
         else if (distance <= attackRange && Time.time >= nextAttackTime)
         {
             nextAttackTime = Time.time + attackCooldown;
+
             PlayerHealth player = target.GetComponentInParent<PlayerHealth>();
-            if (player != null) player.TakeDamage(attackDamage);
+
+            if (player != null)
+                player.TakeDamage(attackDamage);
         }
 
-        if (controller.isGrounded && verticalVelocity.y < 0) verticalVelocity.y = -2f;
+        ApplyGravity();
+    }
+
+    void ApplyGravity()
+    {
+        if (controller.isGrounded && verticalVelocity.y < 0)
+            verticalVelocity.y = -2f;
+
         verticalVelocity.y += gravity * Time.deltaTime;
         controller.Move(verticalVelocity * Time.deltaTime);
     }
@@ -53,6 +85,8 @@ public class EnemyAI : MonoBehaviour
     void FindTarget()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
-        if (player != null) target = player.transform;
+
+        if (player != null)
+            target = player.transform;
     }
 }

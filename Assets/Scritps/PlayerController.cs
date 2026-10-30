@@ -1,6 +1,7 @@
 
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -117,5 +118,35 @@ public class PlayerController : MonoBehaviour
     public void SetOilSlow(float multiplier)
     {
         oilSpeedMultiplier = Mathf.Clamp(multiplier, 0.1f, 1f);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void Start()
+    {
+        FindCamera();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindCamera();
+    }
+
+    private void FindCamera()
+    {
+        Camera mainCamera = Camera.main;
+
+        if (mainCamera != null)
+        {
+            cameraTransform = mainCamera.transform;
+        }
     }
 }

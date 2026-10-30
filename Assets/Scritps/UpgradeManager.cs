@@ -27,17 +27,34 @@ public class UpgradeManager : MonoBehaviour
             pool.RemoveAt(index);
         }
 
-        if (UIManager.Instance != null) UIManager.Instance.ShowUpgradeChoices(CurrentChoices);
+        if (UpgradeSelectionUI.Instance != null)
+        {
+            UpgradeSelectionUI.Instance.ShowChoices(CurrentChoices);
+        }
+        else
+        {
+            Debug.LogError("UpgradeSelectionUI was not found!");
+        }
     }
 
     public void ChooseUpgrade(int index)
     {
-        if (index < 0 || index >= CurrentChoices.Length || CurrentChoices[index] == null) return;
+        if (index < 0 || index >= CurrentChoices.Length || CurrentChoices[index] == null)
+            return;
+
         ApplyUpgrade(CurrentChoices[index]);
-        if (UIManager.Instance != null) UIManager.Instance.HideUpgradePanel();
+
+        // Hide the new three-card upgrade UI
+        if (UpgradeSelectionUI.Instance != null)
+            UpgradeSelectionUI.Instance.HideChoices();
+
+        // Continue to the next level
         LevelManager level = FindObjectOfType<LevelManager>();
-        if (level != null) level.ContinueAfterUpgrade();
-        else if (GameManager.Instance != null) GameManager.Instance.SetPaused(false);
+
+        if (level != null)
+            level.ContinueAfterUpgrade();
+        else if (GameManager.Instance != null)
+            GameManager.Instance.SetPaused(false);
     }
 
     void ApplyUpgrade(UpgradeData data)
@@ -47,6 +64,7 @@ public class UpgradeManager : MonoBehaviour
         PlayerHealth health = player.GetComponent<PlayerHealth>();
         ExplosionController boom = player.GetComponent<ExplosionController>();
         PlayerController movement = player.GetComponent<PlayerController>();
+        PlayerStealth stealth = player.GetComponent<PlayerStealth>();
 
         switch (data.type)
         {
@@ -62,8 +80,8 @@ public class UpgradeManager : MonoBehaviour
             case UpgradeType.MaxHealth:
                 if (health != null) { health.maxHealth += Mathf.Max(1, Mathf.RoundToInt(data.amount)); health.Heal(Mathf.RoundToInt(data.amount)); }
                 break;
-            case UpgradeType.Heal:
-                if (health != null) health.Heal(Mathf.RoundToInt(data.amount));
+            case UpgradeType.Stealth:
+                if (stealth != null) stealth.ActivateStealth();
                 break;
             case UpgradeType.ExplosionCooldown:
                 if (boom != null) boom.cooldown = Mathf.Max(0.2f, boom.cooldown - data.amount);
