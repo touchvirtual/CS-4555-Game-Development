@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbd622639939d4bbb9f0826591421059, type: 3}
   m_Name: Upgrade_BiggerBoom
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
-  upgradeName: Bigger Boom
+  upgradeName: More Damage
   description: Increase explosion damage.
   type: 0
   amount: 1

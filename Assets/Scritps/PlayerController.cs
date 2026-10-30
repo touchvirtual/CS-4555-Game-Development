@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        Debug.Log("Game paused: " + GameManager.Instance.IsPaused);
+
         if (GameManager.Instance != null &&
             GameManager.Instance.IsPaused)
             return;
@@ -107,10 +109,19 @@ public class PlayerController : MonoBehaviour
         controller.Move(verticalVelocity * Time.deltaTime);
 
         // Explode using E.
-        if (Keyboard.current.eKey.wasPressedThisFrame &&
-            explosion != null)
+        if (Keyboard.current.eKey.wasPressedThisFrame)
         {
-            explosion.TryExplode();
+            Debug.Log("E key detected!");
+
+            if (explosion != null)
+            {
+                Debug.Log("Explosion controller found!");
+                explosion.TryExplode();
+            }
+            else
+            {
+                Debug.LogError("ExplosionController is missing!");
+            }
         }
     }
 

@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Upgrade_Stealth
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeData
   upgradeName: Stealthy kitty
-  description: Makes cat undetectable for 5 seconds.
+  description: 'Makes cat undetectable for 5 seconds.
+
+    Press C to activate '
   type: 6
   amount: 5

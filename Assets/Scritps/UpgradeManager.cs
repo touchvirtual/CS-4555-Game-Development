@@ -81,7 +81,15 @@ public class UpgradeManager : MonoBehaviour
                 if (health != null) { health.maxHealth += Mathf.Max(1, Mathf.RoundToInt(data.amount)); health.Heal(Mathf.RoundToInt(data.amount)); }
                 break;
             case UpgradeType.Stealth:
-                if (stealth != null) stealth.ActivateStealth();
+                if (stealth != null)
+                {
+                    stealth.stealthDuration = data.amount;
+                    stealth.UnlockStealth();
+                }
+                else
+                {
+                    Debug.LogWarning("PlayerStealth component is missing from Player!");
+                }
                 break;
             case UpgradeType.ExplosionCooldown:
                 if (boom != null) boom.cooldown = Mathf.Max(0.2f, boom.cooldown - data.amount);

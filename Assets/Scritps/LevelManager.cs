@@ -47,11 +47,15 @@ public class LevelManager : MonoBehaviour
 
     public void ContinueAfterUpgrade()
     {
-        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        int nextSceneIndex = UnityEngine.SceneManagement.SceneManager
+            .GetActiveScene().buildIndex + 1;
 
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        if (nextSceneIndex < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(nextSceneIndex);
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetPaused(false);
+
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneIndex);
         }
         else
         {
