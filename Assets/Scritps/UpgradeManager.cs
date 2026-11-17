@@ -39,22 +39,32 @@ public class UpgradeManager : MonoBehaviour
 
     public void ChooseUpgrade(int index)
     {
+        Debug.Log("Upgrade button clicked. Index: " + index);
+
         if (index < 0 || index >= CurrentChoices.Length || CurrentChoices[index] == null)
+        {
+            Debug.LogError("Invalid upgrade selection!");
             return;
+        }
 
         ApplyUpgrade(CurrentChoices[index]);
 
-        // Hide the new three-card upgrade UI
         if (UpgradeSelectionUI.Instance != null)
             UpgradeSelectionUI.Instance.HideChoices();
 
-        // Continue to the next level
         LevelManager level = FindObjectOfType<LevelManager>();
 
         if (level != null)
+        {
+            Debug.Log("Loading next level...");
             level.ContinueAfterUpgrade();
-        else if (GameManager.Instance != null)
-            GameManager.Instance.SetPaused(false);
+        }
+        else
+        {
+            Debug.LogError("LevelManager was not found!");
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetPaused(false);
+        }
     }
 
     void ApplyUpgrade(UpgradeData data)
@@ -78,7 +88,11 @@ public class UpgradeManager : MonoBehaviour
                 if (movement != null) movement.moveSpeed += data.amount;
                 break;
             case UpgradeType.MaxHealth:
-                if (health != null) { health.maxHealth += Mathf.Max(1, Mathf.RoundToInt(data.amount)); health.Heal(Mathf.RoundToInt(data.amount)); }
+                if (health != null)
+                {
+                    health.maxHealth += Mathf.RoundToInt(data.amount);
+                    health.ResetHealthToMax();
+                }
                 break;
             case UpgradeType.Stealth:
                 if (stealth != null)

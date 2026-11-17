@@ -47,19 +47,37 @@ public class LevelManager : MonoBehaviour
 
     public void ContinueAfterUpgrade()
     {
-        int nextSceneIndex = UnityEngine.SceneManagement.SceneManager
-            .GetActiveScene().buildIndex + 1;
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentIndex + 1;
 
-        if (nextSceneIndex < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
+        Debug.Log("Current Scene Index: " + currentIndex);
+        Debug.Log("Next Scene Index: " + nextSceneIndex);
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             if (GameManager.Instance != null)
                 GameManager.Instance.SetPaused(false);
 
-            UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneIndex);
+            SceneManager.LoadScene(nextSceneIndex);
         }
         else
         {
-            Debug.Log("Congratulations! You completed all levels!");
+            Debug.LogError("Next level is not in Build Profiles!");
+        }
+    }
+
+    private void Start()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+
+        if (player != null)
+        {
+            PlayerHealth health = player.GetComponent<PlayerHealth>();
+
+            if (health != null)
+            {
+                health.ResetHealthToMax();
+            }
         }
     }
 }

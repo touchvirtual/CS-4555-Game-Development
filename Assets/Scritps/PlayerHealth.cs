@@ -45,6 +45,12 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
+    public void ResetHealthToMax()
+    {
+        CurrentHealth = maxHealth;
+        UpdateHealthUI();
+    }
+
     private void UpdateHealthUI()
     {
         if (UIManager.Instance != null)
