@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -24,6 +23,11 @@ public class BossPowerUp : MonoBehaviour
     private bool vehicleActivated;
 
     private PlayerHealth playerHealth;
+
+    public bool VehicleActivated
+    {
+        get { return vehicleActivated; }
+    }
 
     private void Awake()
     {
@@ -53,14 +57,16 @@ public class BossPowerUp : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    private GameObject FindChildByName(Transform parent, string childName)
+    private GameObject FindChildByName(
+        Transform parent, string childName)
     {
         foreach (Transform child in parent)
         {
             if (child.name == childName)
                 return child.gameObject;
 
-            GameObject result = FindChildByName(child, childName);
+            GameObject result =
+                FindChildByName(child, childName);
 
             if (result != null)
                 return result;
@@ -109,7 +115,6 @@ public class BossPowerUp : MonoBehaviour
             GameManager.Instance.IsPaused)
             return;
 
-        // Heal the player over time.
         healTimer += Time.deltaTime;
 
         if (healTimer >= healInterval)
@@ -136,11 +141,8 @@ public class BossPowerUp : MonoBehaviour
         Debug.Log("Boss battle started!");
     }
 
-    // Called whenever the player damages the boss.
     public void AddCharge(float amount)
     {
-        Debug.Log("AddCharge called! Boss battle active: " + bossBattleActive);
-
         if (!bossBattleActive || vehicleActivated)
             return;
 
@@ -167,5 +169,28 @@ public class BossPowerUp : MonoBehaviour
             vehicleModel.SetActive(true);
 
         Debug.Log("Vehicle Power-Up Activated!");
+    }
+
+    public void ReturnToCat()
+    {
+        vehicleActivated = false;
+        bossBattleActive = false;
+
+        chargeAmount = 0f;
+        healTimer = 0f;
+
+        if (vehicleModel != null)
+            vehicleModel.SetActive(false);
+
+        if (catModel != null)
+            catModel.SetActive(true);
+
+        if (vehicleMeter != null)
+        {
+            vehicleMeter.value = 0;
+            vehicleMeter.gameObject.SetActive(false);
+        }
+
+        Debug.Log("Boss defeated! Returned to cat form.");
     }
 }

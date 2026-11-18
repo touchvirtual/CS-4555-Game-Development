@@ -57,12 +57,24 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         if (deathVfxPrefab != null)
+            Instantiate(deathVfxPrefab, transform.position, Quaternion.identity);
+
+        // Check whether the defeated enemy is a boss.
+        BossAI boss = GetComponent<BossAI>();
+
+        if (boss != null)
         {
-            Instantiate(
-                deathVfxPrefab,
-                transform.position,
-                Quaternion.identity
-            );
+            GameObject player =
+                GameObject.FindGameObjectWithTag("Player");
+
+            if (player != null)
+            {
+                BossPowerUp powerUp =
+                    player.GetComponent<BossPowerUp>();
+
+                if (powerUp != null)
+                    powerUp.ReturnToCat();
+            }
         }
 
         if (GameManager.Instance != null)

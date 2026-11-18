@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class ExplosionController : MonoBehaviour
 {
@@ -12,13 +11,27 @@ public class ExplosionController : MonoBehaviour
 
     private float nextReadyTime;
     private PlayerHealth playerHealth;
+    private BossPowerUp bossPowerUp;
 
-    void Awake() { playerHealth = GetComponent<PlayerHealth>(); }
+    void Awake()
+    {
+        playerHealth = GetComponent<PlayerHealth>();
+        bossPowerUp = GetComponent<BossPowerUp>();
+    }
 
     public void TryExplode()
     {
-        if (Time.time < nextReadyTime) return;
-        if (playerHealth != null && playerHealth.IsDead) return;
+        // Do not explode while in vehicle form.
+        if (bossPowerUp != null &&
+            bossPowerUp.VehicleActivated)
+            return;
+
+        if (Time.time < nextReadyTime)
+            return;
+
+        if (playerHealth != null && playerHealth.IsDead)
+            return;
+
         nextReadyTime = Time.time + cooldown;
 
         if (explosionVfxPrefab != null)
@@ -32,19 +45,35 @@ public class ExplosionController : MonoBehaviour
             Destroy(effect, 1f);
         }
 
-        Collider[] hits = Physics.OverlapSphere(transform.position, radius, targetLayers);
+        Collider[] hits = Physics.OverlapSphere(
+            transform.position,
+            radius,
+            targetLayers
+        );
+
         foreach (Collider hit in hits)
         {
-            if (hit.transform.root == transform.root) continue;
-            EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
+            if (hit.transform.root == transform.root)
+                continue;
+
+            EnemyHealth enemy =
+                hit.GetComponentInParent<EnemyHealth>();
+
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
+
                 Rigidbody rb = hit.attachedRigidbody;
+
                 if (rb != null)
                 {
-                    Vector3 direction = (rb.worldCenterOfMass - transform.position).normalized;
-                    rb.AddForce(direction * knockbackForce, ForceMode.Impulse);
+                    Vector3 direction =
+                        (rb.worldCenterOfMass - transform.position).normalized;
+
+                    rb.AddForce(
+                        direction * knockbackForce,
+                        ForceMode.Impulse
+                    );
                 }
             }
         }
