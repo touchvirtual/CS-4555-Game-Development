@@ -17,7 +17,7 @@ MonoBehaviour:
   m_Subtarget: 0
   m_PlatformId: 84a3bb9e7420477f885e98145999eb20
   m_PlatformBuildProfile:
-    rid: 2874058949293244807
+    rid: 2874058953746809165
   m_ActivePlatformGuid: 
   m_AdditionalPlatformBuildSettings: []
   m_OverrideGlobalSceneList: 0
@@ -68,8 +68,8 @@ MonoBehaviour:
     - line: '|   m_VirtualRealitySplashScreen: {instanceID: 0}'
     - line: '|   defaultScreenWidth: 1024'
     - line: '|   defaultScreenHeight: 768'
-    - line: '|   defaultScreenWidthWeb: 960'
-    - line: '|   defaultScreenHeightWeb: 600'
+    - line: '|   defaultScreenWidthWeb: 1920'
+    - line: '|   defaultScreenHeightWeb: 1080'
     - line: '|   m_StereoRenderingPath: 0'
     - line: '|   m_ActiveColorSpace: 1'
     - line: '|   unsupportedMSAAFallback: 0'
@@ -175,7 +175,8 @@ MonoBehaviour:
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
     - line: '|   bundleVersion: 0.1.0'
-    - line: '|   preloadedAssets: []'
+    - line: '|   preloadedAssets:'
+    - line: '|   - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}'
     - line: '|   metroInputSource: 0'
     - line: '|   wsaTransparentSwapchain: 0'
     - line: '|   xboxOneDisableKinectGpuReservation: 1'
@@ -850,7 +851,7 @@ MonoBehaviour:
     - line: '|   webGLWasmArithmeticExceptions: 0'
     - line: '|   webGLLinkerTarget: 1'
     - line: '|   webGLThreadsSupport: 0'
-    - line: '|   webGLDecompressionFallback: 0'
+    - line: '|   webGLDecompressionFallback: 1'
     - line: '|   webGLInitialMemorySize: 32'
     - line: '|   webGLMaximumMemorySize: 2048'
     - line: '|   webGLMemoryGrowthMode: 2'
@@ -866,7 +867,7 @@ MonoBehaviour:
     - line: '|   webProgressiveAssetLoading: 0'
     - line: '|   scriptingDefineSymbols:'
     - line: '|     Standalone: SENTIS_ANALYTICS_ENABLED;APP_UI_EDITOR_ONLY'
-    - line: '|     WebGL: SENTIS_ANALYTICS_ENABLED;APP_UI_EDITOR_ONLY'
+    - line: '|     WebGL: APP_UI_EDITOR_ONLY;SENTIS_ANALYTICS_ENABLED'
     - line: '|   additionalCompilerArguments: {}'
     - line: '|   platformArchitecture: {}'
     - line: '|   scriptingBackend:'
@@ -989,7 +990,7 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 2874058949293244807
+    - rid: 2874058953746809165
       type: {class: WebGLPlatformSettings, ns: UnityEditor.WebGL, asm: UnityEditor.WebGL.Extensions}
       data:
         m_Development: 0

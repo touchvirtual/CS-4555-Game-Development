@@ -936,6 +936,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 13795492, guid: 1ad34b5cd1046bc44b507dfdf6b9a6d4, type: 3}
+      propertyPath: m_Quality
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 13795492, guid: 1ad34b5cd1046bc44b507dfdf6b9a6d4, type: 3}
       propertyPath: m_AABB.m_Center.x
       value: 0.0013689995
       objectReference: {fileID: 0}
@@ -1125,8 +1129,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 46.180664, y: 0}
-  m_SizeDelta: {x: 1269.1384, y: 102}
+  m_AnchoredPosition: {x: -0.012512, y: 0}
+  m_SizeDelta: {x: 1280, y: 102}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &688105266
 MonoBehaviour:
@@ -2021,7 +2025,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -900, y: 115}
+  m_AnchoredPosition: {x: -597, y: 29}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1303112823
