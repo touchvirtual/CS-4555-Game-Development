@@ -16,6 +16,7 @@ public class UIManager : MonoBehaviour
     public GameObject upgradePanel;
     public Button[] upgradeButtons;
     public TMP_Text[] upgradeButtonLabels;
+    public GameObject endDemoPanel;
 
     void Awake() { Instance = this; }
 
@@ -77,6 +78,15 @@ public class UIManager : MonoBehaviour
                 upgradeButtons[i].onClick.RemoveAllListeners();
                 upgradeButtons[i].onClick.AddListener(() => UpgradeManager.Instance.ChooseUpgrade(index));
             }
+        }
+    }
+
+    public void ShowEndDemo()
+    {
+        if (endDemoPanel != null)
+        {
+            endDemoPanel.SetActive(true);
+            Time.timeScale = 0f;
         }
     }
 

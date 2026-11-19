@@ -75,6 +75,12 @@ public class EnemyHealth : MonoBehaviour
                 if (powerUp != null)
                     powerUp.ReturnToCat();
             }
+
+            if (CompareTag("Boss"))
+            {
+                if (UIManager.Instance != null)
+                    UIManager.Instance.ShowEndDemo();
+            }
         }
 
         if (GameManager.Instance != null)

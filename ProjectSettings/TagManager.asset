@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Boss
+  - SpawnPoint
   layers:
   - Default
   - TransparentFX
