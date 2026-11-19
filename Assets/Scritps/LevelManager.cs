@@ -1,4 +1,5 @@
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,25 +9,43 @@ public class LevelManager : MonoBehaviour
     public int enemiesRequired = 8;
     private int defeatedThisLevel;
     public NPCArrowIndicator npcArrow;
+    public int DefeatedThisLevel => defeatedThisLevel;
+    private bool completing;
+
+    private IEnumerator Start()
+    {
+        // NPCArrowIndicator initializes its visibility in Start, so restore after it.
+        yield return null; var cat=BombaCatCheckpointService.ActivePlayer; if(cat!=null && cat.health!=null) cat.health.ResetHealthToMax();
+        RefreshObjective();
+    }
 
     public void StartLevel(int levelNumber, int requiredEnemies)
     {
         currentLevel = levelNumber;
         enemiesRequired = requiredEnemies;
         defeatedThisLevel = 0;
+        completing = false;
     }
 
     public void EnemyDefeatedForLevel()
     {
         defeatedThisLevel++;
 
-        if (defeatedThisLevel >= enemiesRequired)
-        {
-            if (npcArrow != null)
-            {
-                npcArrow.ShowArrow();
-            }
-        }
+        RefreshObjective();
+    }
+
+    public void RestoreProgress(int defeatedCount)
+    {
+        defeatedThisLevel = Mathf.Clamp(defeatedCount, 0, Mathf.Max(0, enemiesRequired));
+        completing = false;
+        RefreshObjective();
+    }
+
+    private void RefreshObjective()
+    {
+        if (npcArrow == null) return;
+        if (EnemiesRemaining <= 0) npcArrow.ShowArrow();
+        else npcArrow.HideArrow();
     }
 
     public int EnemiesRemaining
@@ -36,6 +55,8 @@ public class LevelManager : MonoBehaviour
 
     public void CompleteLevel()
     {
+        if (completing) return;
+        completing = true;
         if (GameManager.Instance != null)
             GameManager.Instance.SetPaused(true);
 
@@ -47,37 +68,23 @@ public class LevelManager : MonoBehaviour
 
     public void ContinueAfterUpgrade()
     {
-        int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextSceneIndex = currentIndex + 1;
+        int nextSceneIndex = UnityEngine.SceneManagement.SceneManager
+            .GetActiveScene().buildIndex + 1;
 
-        Debug.Log("Current Scene Index: " + currentIndex);
-        Debug.Log("Next Scene Index: " + nextSceneIndex);
-
-        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        if (nextSceneIndex < UnityEngine.SceneManagement.SceneManager.sceneCountInBuildSettings)
         {
             if (GameManager.Instance != null)
                 GameManager.Instance.SetPaused(false);
 
-            SceneManager.LoadScene(nextSceneIndex);
+            UnityEngine.SceneManagement.SceneManager.LoadScene(nextSceneIndex);
         }
         else
         {
-            Debug.LogError("Next level is not in Build Profiles!");
-        }
-    }
-
-    private void Start()
-    {
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-
-        if (player != null)
-        {
-            PlayerHealth health = player.GetComponent<PlayerHealth>();
-
-            if (health != null)
-            {
-                health.ResetHealthToMax();
-            }
+            if (GameManager.Instance != null)
+                GameManager.Instance.SetPaused(true);
+            if (UIManager.Instance != null)
+                UIManager.Instance.ShowVictory();
         }
     }
 }
+

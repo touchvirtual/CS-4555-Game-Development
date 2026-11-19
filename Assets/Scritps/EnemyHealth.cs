@@ -10,9 +10,11 @@ public class EnemyHealth : MonoBehaviour
 
     public int CurrentHealth { get; private set; }
 
-    void Awake()
+    public string CheckpointId { get; private set; }
+ public void RestoreDefeatedState(){ CurrentHealth=0; gameObject.SetActive(false); Destroy(gameObject); }
+ void Awake()
     {
-        CurrentHealth = maxHealth;
+        CurrentHealth = maxHealth; CheckpointId=BombaCatCheckpointService.GetEnemyId(this,null); BombaCatEnemyBar.Ensure(this);
 
         if (levelManager == null)
             levelManager = FindObjectOfType<LevelManager>();
@@ -56,6 +58,7 @@ public class EnemyHealth : MonoBehaviour
 
     void Die()
     {
+ BombaCatCheckpointService.RecordEnemyDefeated(this);
         if (deathVfxPrefab != null)
             Instantiate(deathVfxPrefab, transform.position, Quaternion.identity);
 
@@ -92,3 +95,4 @@ public class EnemyHealth : MonoBehaviour
         Destroy(gameObject);
     }
 }
+

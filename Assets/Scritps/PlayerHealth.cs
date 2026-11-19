@@ -45,13 +45,15 @@ public class PlayerHealth : MonoBehaviour
         UpdateHealthUI();
     }
 
-    public void ResetHealthToMax()
+    public void RestoreForRespawn(int restoredMaxHealth)
     {
+        maxHealth = Mathf.Max(1, restoredMaxHealth);
         CurrentHealth = maxHealth;
         UpdateHealthUI();
     }
 
-    private void UpdateHealthUI()
+    public void ResetHealthToMax(){RestoreForRespawn(maxHealth);}
+ private void UpdateHealthUI()
     {
         if (UIManager.Instance != null)
         {
@@ -62,3 +64,4 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 }
+

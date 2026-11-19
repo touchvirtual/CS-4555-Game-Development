@@ -12,6 +12,7 @@ public class DialogueUI : MonoBehaviour
     public GameObject interactionPrompt;
 
     public bool IsTalking { get; private set; }
+    public Transform Speaker { get; private set; }
     public System.Action OnDialogueCompleted;
 
     private string[] dialogueLines;
@@ -22,6 +23,7 @@ public class DialogueUI : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        gameObject.AddComponent<BombaCatConversationView>();
     }
 
     private void Start()
@@ -52,7 +54,7 @@ public class DialogueUI : MonoBehaviour
     }
 
     public void StartDialogue(
-        string[] lines, PlayerController player)
+        string[] lines, PlayerController player, Transform speaker = null)
     {
         if (lines == null || lines.Length == 0)
             return;
@@ -60,6 +62,7 @@ public class DialogueUI : MonoBehaviour
         dialogueLines = lines;
         currentLine = 0;
         currentPlayer = player;
+        Speaker = speaker;
         IsTalking = true;
         canAdvance = false;
 
@@ -102,6 +105,7 @@ public class DialogueUI : MonoBehaviour
     public void CloseDialogue()
     {
         IsTalking = false;
+        Speaker = null;
 
         if (dialoguePanel != null)
             dialoguePanel.SetActive(false);

@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -35,16 +36,56 @@ public class GameManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.UpdateEnemyCount(defeatedEnemies);
     }
 
+    public void RestoreEnemyCount(int count)
+    {
+        defeatedEnemies = Mathf.Max(0, count);
+        if (UIManager.Instance != null) UIManager.Instance.UpdateEnemyCount(defeatedEnemies);
+    }
+
     public void GameOver()
     {
         SetPaused(true);
         if (UIManager.Instance != null) UIManager.Instance.ShowGameOver();
     }
 
+    private bool restarting;
+
     public void RestartGame()
     {
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (restarting) return;
+        restarting = BombaCatCheckpointService.ReloadCheckpoint();
+    }
+
+    // Pause-menu restart starts this area again, retaining upgrades brought into it.
+    public void RestartLevel()
+    {
+        if (restarting) return;
+        restarting = BombaCatCheckpointService.ReloadLevelStart();
+    }
+
+    // A new run is deliberately separate from retrying after a defeat.
+    public void RestartRun()
+    {
+        if (!restarting) StartCoroutine(RestartRunRoutine());
+    }
+
+    private IEnumerator RestartRunRoutine()
+    {
+        restarting = true;
+        SetPaused(false);
+        BombaCatCheckpointService.ClearRun();
+        foreach (var player in FindObjectsByType<PlayerController>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            player.gameObject.SetActive(false);
+            Destroy(player.transform.root.gameObject);
+        }
+        yield return null;
+        SceneManager.LoadScene(0);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
     }
 
     public void QuitGame() { Application.Quit(); }

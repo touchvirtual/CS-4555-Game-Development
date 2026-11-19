@@ -59,7 +59,7 @@ public class NPCInteractable : MonoBehaviour
         if (Keyboard.current.fKey.wasPressedThisFrame)
         {
             waitForKeyRelease = true;
-            DialogueUI.Instance.StartDialogue(dialogueLines, player);
+            DialogueUI.Instance.StartDialogue(dialogueLines, player, transform);
         }
     }
 
